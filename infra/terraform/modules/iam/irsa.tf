@@ -72,6 +72,43 @@ resource "aws_iam_role_policy_attachment" "external_dns_policy_attachment" {
 
 ########################################################################
 
+resource "aws_iam_role" "cert_manager_role" {
+  name = "${var.project_name}-cert-manager-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Principal = {
+          Federated = var.cluster_oidc_provider_arn
+        }
+        Condition = {
+          StringEquals = {
+            "${var.cluster_oidc_issuer_url}:aud" = "sts.amazonaws.com"
+            "${var.cluster_oidc_issuer_url}:sub" = "system:serviceaccount:cert-manager:cert-manager"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_policy" "cert_manager_policy" {
+  name   = "${var.project_name}-cert-manager-policy"
+  policy = file("${path.module}/cm_policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "cert_manager_policy_attachment" {
+  role       = aws_iam_role.cert_manager_role.name
+  policy_arn = aws_iam_policy.cert_manager_policy.arn
+}
+
+########################################################################
+
 resource "aws_iam_role" "ebs_csi_driver_role" {
   name = "${var.project_name}-ebs-csi-driver-role"
 
