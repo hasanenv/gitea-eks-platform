@@ -1,0 +1,72 @@
+name: docker-build-push
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag for the Gitea image"
+        required: true
+        default: "1.27"
+
+env:
+  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPO_NAME: ${{ vars.AWS_REPO }}
+  ECR_REGISTRY: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  gitea-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pull Gitea public image
+        run: docker pull gitea/gitea:${{ github.event.inputs.tag }}
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@v0.9.0
+        with:
+          image-ref: gitea/gitea:${{ github.event.inputs.tag }}
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/docker-pipeline-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag image for ECR
+        run: docker tag gitea/gitea:${{ github.event.inputs.tag }} ${ECR_REGISTRY}/${ECR_REPO_NAME}:${{ github.event.inputs.tag }}
+
+      - name: Push image to ECR
+        run: docker push ${ECR_REGISTRY}/${ECR_REPO_NAME}:${{ github.event.inputs.tag }}
+
+      - name: Verify image in ECR
+        run: |
+          aws ecr describe-images \
+          --repository-name ${ECR_REPO_NAME} \
+          --image-ids imageTag=${{ github.event.inputs.tag }} \
+          --region ${{ env.AWS_REGION }}
+
+      - name: Update image tag in deployment.yaml
+        run: |
+          sed -i \
+          "s|image: gitea/gitea:.*|image: ${ECR_REGISTRY}/${ECR_REPO_NAME}:${{ github.event.inputs.tag }}|" \
+          infra/kubernetes/app/gitea/deployment.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add infra/kubernetes/app/gitea/deployment.yaml
+          git commit -m "chore: update Gitea image to ${{ github.event.inputs.tag }}"
+          git push origin HEAD:main

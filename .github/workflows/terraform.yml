@@ -1,0 +1,97 @@
+name: terraform
+
+on:
+  pull_request:
+    paths:
+      - 'infra/terraform/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra/terraform/**'
+
+env:
+  TF_VAR_github_repo: ${{ vars.MY_REPO }}
+  TF_VAR_aws_account_id: ${{ vars.AWS_ACCOUNT_ID }}
+  TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform-plan:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/terraform-plan-role
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.15.7
+
+      - name: Terraform init
+        working-directory: infra/terraform/envs/prod/
+        run: terraform init
+
+      - name: Terraform validate
+        working-directory: infra/terraform/envs/prod/
+        run: terraform validate
+
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12.0.0
+        with:
+          directory: infra/terraform/
+          quiet: true
+
+      - name: Terraform plan
+        working-directory: infra/terraform/envs/prod/
+        run: terraform plan
+
+  terraform-apply:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/terraform-apply-role
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.15.7
+
+      - name: Terraform init
+        working-directory: infra/terraform/envs/prod/
+        run: terraform init
+
+      - name: Terraform validate
+        working-directory: infra/terraform/envs/prod/
+        run: terraform validate
+
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12.0.0
+        with:
+          directory: infra/terraform/
+          quiet: true
+
+      - name: Terraform plan
+        working-directory: infra/terraform/envs/prod/
+        run: terraform plan -out=tfplan
+
+      - name: Terraform apply
+        working-directory: infra/terraform/envs/prod/
+        run: terraform apply -auto-approve tfplan
