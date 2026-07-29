@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aws-lbc
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: aws-lbc
+    managed-by: argocd
+
+spec: 
+  project: default
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+
+  sources:
+   - repoURL: https://aws.github.io/eks-charts
+     chart: aws-load-balancer-controller
+     targetRevision: "3.4.2"
+     helm:
+      valueFiles:
+        - $values/infra/kubernetes/platform/aws-lbc/values.yaml
+
+   - repoURL: https://github.com/hasanenv/gitea-eks-platform
+     targetRevision: HEAD
+     ref: values
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

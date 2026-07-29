@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: external-dns
+    managed-by: argocd
+
+spec: 
+  project: default
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-dns
+
+  sources:
+   - repoURL: https://kubernetes-sigs.github.io/external-dns/
+     chart: external-dns
+     targetRevision: "1.21.1"
+     helm:
+      valueFiles:
+        - $values/infra/kubernetes/platform/external-dns/values.yaml
+
+   - repoURL: https://github.com/hasanenv/gitea-eks-platform
+     targetRevision: HEAD
+     ref: values
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

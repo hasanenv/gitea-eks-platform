@@ -1,0 +1,6 @@
+grafana:
+  adminPassword: #TO DO
+
+prometheus:
+  prometheusSpec:
+    retention: 7d

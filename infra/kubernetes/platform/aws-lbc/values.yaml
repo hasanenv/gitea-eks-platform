@@ -1,0 +1,8 @@
+clusterName: gitea-eks-cluster
+region: eu-west-2
+
+serviceAccount:
+  create: true
+  name: aws-load-balancer-controller
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::727646481331:role/gitea-eks-platform-load-balancer-controller-role"

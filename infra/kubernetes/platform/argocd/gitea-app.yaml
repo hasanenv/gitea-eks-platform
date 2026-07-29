@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitea
+  namespace: argocd
+  finalizers:
+    # default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: gitea
+    managed-by: argocd
+
+spec: 
+  project: default
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitea
+
+  sources:
+   - repoURL: https://dl.gitea.io/charts/
+     chart: gitea
+     targetRevision: "12.7.0"
+     helm:
+      valueFiles:
+        - $values/infra/kubernetes/app/gitea/values.yaml
+
+   - repoURL: https://github.com/hasanenv/gitea-eks-platform
+     targetRevision: HEAD
+     ref: values
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

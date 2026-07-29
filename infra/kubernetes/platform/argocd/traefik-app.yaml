@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  finalizers:
+    # default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: traefik
+    managed-by: argocd
+
+spec: 
+  project: default
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+
+  sources:
+   - repoURL: https://traefik.github.io/charts
+     chart: traefik
+     targetRevision: "40.3.0"
+     helm:
+      valueFiles:
+        - $values/infra/kubernetes/platform/traefik/values.yaml
+
+   - repoURL: https://github.com/hasanenv/gitea-eks-platform
+     targetRevision: HEAD
+     ref: values
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: monitoring
+    managed-by: argocd
+
+spec: 
+  project: default
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+
+  sources:
+   - repoURL: oci://ghcr.io/prometheus-community/charts
+     chart: kube-prometheus-stack
+     targetRevision: "87.18.1"
+     helm:
+      valueFiles:
+        - $values/infra/kubernetes/platform/monitoring/values.yaml
+
+   - repoURL: https://github.com/hasanenv/gitea-eks-platform
+     targetRevision: HEAD
+     ref: values
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

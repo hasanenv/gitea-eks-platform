@@ -1,0 +1,41 @@
+gitea:
+  admin:
+    username: gitea_admin
+    password: #TO DO
+    email: "hasan-kamran@outlook.com"
+
+  config:
+    database:
+      DB_TYPE: postgres
+      HOST: PLACEHOLDER-gitea-postgres:5432
+      NAME: eks_gitea_db
+      USER: gitea-user
+      PASSWD: #TO DO
+    APP_NAME: "Gitea: Git with a cup of tea"
+
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-gitea
+  tls:
+    - secretName: gitea-tls
+      hosts:
+       - gitea.hasanenv.co.uk
+  hosts:
+    - host: gitea.hasanenv.co.uk
+      paths:      
+        - path: /
+          pathType: Prefix
+
+persistence:
+  enabled: true
+  size: 10Gi
+
+postgresql:
+  enabled: false
+
+postgresql-ha:
+  enabled: false
