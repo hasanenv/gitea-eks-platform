@@ -1,0 +1,17 @@
+server:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      cert-manager.io/cluster-issuer: letsencrypt-gitea
+    hosts:
+      - argocd.hasanenv.co.uk
+    tls:
+      - secretName: argocd-tls
+        hosts:
+          - argocd.hasanenv.co.uk
+
+  extraArgs:
+    - --insecure
