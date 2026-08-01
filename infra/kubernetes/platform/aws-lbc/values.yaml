@@ -1,5 +1,6 @@
 clusterName: gitea-eks-cluster
 region: eu-west-2
+vpcId: vpc-0bfc3e0ed7fce8f8d
 
 serviceAccount:
   create: true

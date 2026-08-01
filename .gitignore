@@ -1,4 +1,3 @@
-```
 # Terraform
 .terraform/
 *.tfstate
@@ -26,4 +25,16 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
-```
+
+# Kubernetes
+*secret*.yaml
+*secrets*.yaml
+kubectl
+kubectl-*
+
+# Helm
+charts/
+Chart.lock
+
+# Shell script outputs
+*.log
