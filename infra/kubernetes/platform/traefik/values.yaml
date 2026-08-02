@@ -1,7 +1,6 @@
 service:
   type: LoadBalancer
   annotations:
-    # AWS LBC annotations to tell it to create an NLB
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
@@ -9,13 +8,14 @@ service:
 ports:
   web:
     port: 80
-    redirectTo:
-      port: 443
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
   websecure:
     port: 443
-
-dashboard:
-  enabled: true 
 
 ingressRoute:
   dashboard:
