@@ -17,7 +17,7 @@ spec:
     namespace: monitoring
 
   sources:
-   - repoURL: oci://ghcr.io/prometheus-community/charts
+   - repoURL: https://prometheus-community.github.io/helm-charts
      chart: kube-prometheus-stack
      targetRevision: "87.18.1"
      helm:
