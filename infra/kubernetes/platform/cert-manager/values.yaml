@@ -1,16 +1,2 @@
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-gitea
-spec:
-  acme:
-    email: hasan-kamran@outlook.com
-    server: https://acme-v02.api.letsencrypt.org/directory
-    privateKeySecretRef:
-      name: letsencrypt-gitea
-    solvers:
-    - dns01:
-        route53:
-          region: eu-west-2
-          hostedZoneID: Z082795237GXYPWSN0QXM
-          role: arn:aws:iam::727646481331:role/gitea-eks-platform-cert-manager-role
+crds:
+  enabled: true
