@@ -98,3 +98,11 @@ resource "aws_eks_node_group" "eks_node_group" {
 
   tags = local.common_tags
 }
+
+resource "aws_iam_openid_connect_provider" "eks_oidc" {
+  url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = ["06b25927c42a721631c1efd9431e648fa62e1e39"]
+
+  tags = local.common_tags
+}

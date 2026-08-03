@@ -12,8 +12,8 @@ resource "aws_iam_role" "load_balancer_controller_role" {
         }
         Condition = {
           StringEquals = {
-            "${var.cluster_oidc_issuer_url}:aud" = "sts.amazonaws.com"
-            "${var.cluster_oidc_issuer_url}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
       }
@@ -49,8 +49,8 @@ resource "aws_iam_role" "external_dns_role" {
         }
         Condition = {
           StringEquals = {
-            "${var.cluster_oidc_issuer_url}:aud" = "sts.amazonaws.com"
-            "${var.cluster_oidc_issuer_url}:sub" = "system:serviceaccount:kube-system:external-dns"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:external-dns"
           }
         }
       }
@@ -86,8 +86,8 @@ resource "aws_iam_role" "cert_manager_role" {
         }
         Condition = {
           StringEquals = {
-            "${var.cluster_oidc_issuer_url}:aud" = "sts.amazonaws.com"
-            "${var.cluster_oidc_issuer_url}:sub" = "system:serviceaccount:cert-manager:cert-manager"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:cert-manager:cert-manager"
           }
         }
       }
@@ -123,8 +123,8 @@ resource "aws_iam_role" "ebs_csi_driver_role" {
         }
         Condition = {
           StringEquals = {
-            "${var.cluster_oidc_issuer_url}:aud" = "sts.amazonaws.com"
-            "${var.cluster_oidc_issuer_url}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
           }
         }
       }
