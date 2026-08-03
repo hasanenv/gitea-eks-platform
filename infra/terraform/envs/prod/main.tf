@@ -23,6 +23,7 @@ module "eks" {
   instance_types          = var.instance_types
   capacity_type           = var.capacity_type
   private_subnets         = module.vpc.private_subnets
+  ebs_csi_role_arn        = module.iam.ebs_csi_role_arn
 }
 
 module "iam" {

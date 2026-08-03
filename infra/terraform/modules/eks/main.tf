@@ -106,3 +106,11 @@ resource "aws_iam_openid_connect_provider" "eks_oidc" {
 
   tags = local.common_tags
 }
+
+resource "aws_eks_addon" "ebs_csi_driver" {
+  cluster_name             = aws_eks_cluster.eks_cluster.name
+  addon_name               = "aws-ebs-csi-driver"
+  service_account_role_arn = var.ebs_csi_role_arn
+
+  depends_on = [aws_eks_node_group.eks_node_group]
+}

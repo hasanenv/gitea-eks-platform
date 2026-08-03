@@ -33,3 +33,7 @@ variable "capacity_type" {
 variable "private_subnets" {
   type = list(string)
 }
+
+variable "ebs_csi_role_arn" {
+  type = string
+}
