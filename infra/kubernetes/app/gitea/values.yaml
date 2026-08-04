@@ -14,7 +14,7 @@ gitea:
     APP_NAME: "Gitea: Git with a cup of tea"
 
   additionalConfigFromEnvs:
-    - name: GITEA__DATABASE__PASSWORD
+    - name: GITEA__DATABASE__PASSWD
       valueFrom:
         secretKeyRef:
           name: gitea-db-secret
