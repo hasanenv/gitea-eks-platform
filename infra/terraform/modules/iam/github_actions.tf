@@ -242,7 +242,12 @@ resource "aws_iam_policy" "docker_pipeline_ecr_access" {
           "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload",
-          "ecr:PutImage"
+          "ecr:PutImage",
+          "ecr:DescribeImages",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:ListImages",
+          "ecr:GetAuthorizationToken"
         ]
         Resource = ["arn:aws:ecr:${var.aws_region}:${var.aws_account_id}:repository/${var.project_name}-*"]
       }
