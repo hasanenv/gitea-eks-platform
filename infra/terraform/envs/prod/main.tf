@@ -39,6 +39,12 @@ module "iam" {
   cluster_oidc_issuer_url   = module.eks.cluster_oidc_issuer_url
 }
 
+module "ecr" {
+  source       = "../../modules/ecr"
+  project_name = var.project_name
+  owner        = var.owner
+}
+
 module "rds" {
   source                     = "../../modules/rds"
   owner                      = var.owner
