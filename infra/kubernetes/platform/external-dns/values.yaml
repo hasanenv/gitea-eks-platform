@@ -1,14 +1,19 @@
 provider:
-  name: aws
+  name: cloudflare
+
 env:
-  - name: AWS_DEFAULT_REGION
-    value: eu-west-2
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-api-token
+        key: api-token
+
 domainFilters:
   - "hasanenv.co.uk"
+
 policy: sync
+
 txtOwnerId: "gitea-eks"
+
 serviceAccount:
-  annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::727646481331:role/gitea-eks-platform-external-dns-role"
-extraArgs:
-  - --aws-zone-type=public
+  annotations: {}

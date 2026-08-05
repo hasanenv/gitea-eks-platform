@@ -35,43 +35,6 @@ resource "aws_iam_role_policy_attachment" "load_balancer_controller_policy_attac
 
 ########################################################################
 
-resource "aws_iam_role" "external_dns_role" {
-  name = "${var.project_name}-external-dns-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Effect = "Allow"
-        Principal = {
-          Federated = var.cluster_oidc_provider_arn
-        }
-        Condition = {
-          StringEquals = {
-            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
-            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:external-dns:external-dns"
-          }
-        }
-      }
-    ]
-  })
-
-  tags = local.common_tags
-}
-
-resource "aws_iam_policy" "external_dns_policy" {
-  name   = "${var.project_name}-external-dns-policy"
-  policy = file("${path.module}/ed_policy.json")
-}
-
-resource "aws_iam_role_policy_attachment" "external_dns_policy_attachment" {
-  role       = aws_iam_role.external_dns_role.name
-  policy_arn = aws_iam_policy.external_dns_policy.arn
-}
-
-########################################################################
-
 resource "aws_iam_role" "cert_manager_role" {
   name = "${var.project_name}-cert-manager-role"
 

@@ -10,7 +10,7 @@ spec:
       name: letsencrypt-gitea
     solvers:
     - dns01:
-        route53:
-          region: eu-west-2
-          hostedZoneID: Z082795237GXYPWSN0QXM
-          role: arn:aws:iam::727646481331:role/gitea-eks-platform-cert-manager-role
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare-api-token
+            key: api-token
