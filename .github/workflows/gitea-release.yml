@@ -9,10 +9,10 @@ on:
         default: "1.27"
 
 env:
-  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   AWS_REGION: ${{ vars.AWS_REGION }}
-  ECR_REPO_NAME: ${{ vars.AWS_REPO }}
-  ECR_REGISTRY: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+  ECR_REPO_NAME: ${{ secrets.AWS_REPO }}
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
 
 permissions:
   contents: write
