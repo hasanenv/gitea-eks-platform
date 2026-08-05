@@ -50,7 +50,7 @@ resource "aws_iam_role" "external_dns_role" {
         Condition = {
           StringEquals = {
             "${replace(var.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
-            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:external-dns"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:external-dns:external-dns"
           }
         }
       }
