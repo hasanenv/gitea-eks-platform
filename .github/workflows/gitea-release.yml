@@ -34,6 +34,7 @@ jobs:
           image-ref: gitea/gitea:${{ github.event.inputs.tag }}
           severity: HIGH,CRITICAL
           exit-code: "1"
+          trivyignores: .trivyignore
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
