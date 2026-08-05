@@ -30,11 +30,12 @@ resource "aws_security_group" "eks_gitea_db_sg" {
   tags = local.common_tags
 }
 
-#checkov:skip=CKV_AWS_16: RDS uses default AES-256 encryption via manage_master_user_password
-#checkov:skip=CKV_AWS_118: Enhanced monitoring adds cost - flagged for future improvement
-#checkov:skip=CKV_AWS_129: RDS logging adds cost - flagged for future improvement
-#checkov:skip=CKV_AWS_161: IAM authentication not compatible with current Gitea connection method
 resource "aws_db_instance" "eks_gitea_db" {
+  #checkov:skip=CKV_AWS_16: RDS uses default AES-256 encryption via manage_master_user_password
+  #checkov:skip=CKV_AWS_118: Enhanced monitoring adds cost - flagged for future improvement
+  #checkov:skip=CKV_AWS_129: RDS logging adds cost - flagged for future improvement
+  #checkov:skip=CKV_AWS_161: IAM authentication not compatible with current Gitea connection method
+  #checkov:skip=CKV2_AWS_30: Query logging adds cost - flagged for future improvement
   allocated_storage           = 30
   storage_type                = "gp3"
   db_name                     = "eks_gitea_db"

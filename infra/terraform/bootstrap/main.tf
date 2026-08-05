@@ -1,9 +1,9 @@
-#checkov:skip=CKV_AWS_18: Access logging not required for Terraform state bucket
-#checkov:skip=CKV_AWS_19: S3 encrypts by default with AES-256 since 2023 - no additional config needed
-#checkov:skip=CKV_AWS_21: Versioning configured via separate aws_s3_bucket_versioning resource in this module below
-#checkov:skip=CKV_AWS_144: Cross-region replication not required for Terraform state bucket
-#checkov:skip=CKV_AWS_145: S3 default encryption with AES-256 is sufficient - KMS not required
 resource "aws_s3_bucket" "terraform_state" {
+  #checkov:skip=CKV_AWS_18: Access logging not required for Terraform state bucket
+  #checkov:skip=CKV_AWS_19: S3 encrypts by default with AES-256 since 2023 - no additional config needed
+  #checkov:skip=CKV_AWS_21: Versioning configured via separate aws_s3_bucket_versioning resource in this module
+  #checkov:skip=CKV_AWS_144: Cross-region replication not required for Terraform state bucket
+  #checkov:skip=CKV_AWS_145: S3 default encryption with AES-256 is sufficient - KMS not required
   bucket = "${var.project_name}-terraform-state"
 
   lifecycle {
@@ -16,7 +16,6 @@ resource "aws_s3_bucket" "terraform_state" {
     Project   = var.project_name
     ManagedBy = "Terraform"
   }
-
 }
 
 resource "aws_s3_bucket_versioning" "terraform_state" {

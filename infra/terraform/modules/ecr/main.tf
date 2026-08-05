@@ -1,5 +1,5 @@
-#checkov:skip=CKV_AWS_136: ECR uses default AES-256 encryption which is sufficient
 resource "aws_ecr_repository" "gitea" {
+  #checkov:skip=CKV_AWS_136: ECR uses default AES-256 encryption which is sufficient
   name                 = "${var.project_name}-gitea"
   image_tag_mutability = "IMMUTABLE"
 

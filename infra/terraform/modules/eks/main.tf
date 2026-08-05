@@ -24,9 +24,9 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_role_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
-#checkov:skip=CKV_AWS_39: Public endpoint intentionally enabled with CIDR restriction to known IPs
-#checkov:skip=CKV_AWS_58: KMS encryption requires cluster recreation - planned for next rebuild
 resource "aws_eks_cluster" "eks_cluster" {
+  #checkov:skip=CKV_AWS_39: Public endpoint intentionally enabled with CIDR restriction to known IPs
+  #checkov:skip=CKV_AWS_58: KMS encryption requires cluster recreation - planned for next rebuild
   name     = var.cluster_name
   role_arn = aws_iam_role.eks_cluster_role.arn
   version  = "1.34"
