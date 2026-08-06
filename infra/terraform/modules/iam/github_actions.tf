@@ -116,6 +116,7 @@ resource "aws_iam_policy" "terraform_apply_permissions" {
           "iam:TagRole",
           "iam:UntagRole",
           "iam:CreatePolicy",
+          "iam:CreatePolicyVersion",
           "iam:DeletePolicy",
           "iam:GetPolicy",
           "iam:GetPolicyVersion",
