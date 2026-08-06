@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag for the Gitea image"
+        description: "Tag for the Gitea image (e.g. 1.27.1-rootless)"
         required: true
-        default: "1.27.1"
+        default: "1.27.1-rootless"
 
 env:
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
@@ -26,12 +26,12 @@ jobs:
       - uses: actions/checkout@v4.2.2
 
       - name: Pull Gitea public image
-        run: docker pull gitea/gitea:${{ github.event.inputs.tag }}-rootless
+        run: docker pull gitea/gitea:${{ github.event.inputs.tag }}
 
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@v0.9.0
         with:
-          image-ref: gitea/gitea:${{ github.event.inputs.tag }}-rootless
+          image-ref: gitea/gitea:${{ github.event.inputs.tag }}
           severity: HIGH,CRITICAL
           exit-code: "1"
           trivyignores: .trivyignore
@@ -46,22 +46,22 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Tag image for ECR
-        run: docker tag gitea/gitea:${{ github.event.inputs.tag }}-rootless ${ECR_REGISTRY}/${ECR_REPO_NAME}:${{ github.event.inputs.tag }}-rootless
+        run: docker tag gitea/gitea:${{ github.event.inputs.tag }} ${ECR_REGISTRY}/${ECR_REPO_NAME}:${{ github.event.inputs.tag }}
 
       - name: Push image to ECR
-        run: docker push ${ECR_REGISTRY}/${ECR_REPO_NAME}:${{ github.event.inputs.tag }}-rootless
+        run: docker push ${ECR_REGISTRY}/${ECR_REPO_NAME}:${{ github.event.inputs.tag }}
 
       - name: Verify image in ECR
         run: |
           aws ecr describe-images \
           --repository-name ${ECR_REPO_NAME} \
-          --image-ids imageTag=${{ github.event.inputs.tag }}-rootless \
+          --image-ids imageTag=${{ github.event.inputs.tag }} \
           --region ${{ env.AWS_REGION }}
 
       - name: Update image tag in values.yaml
         run: |
           sed -i \
-          "s|tag: .*|tag: \"${{ github.event.inputs.tag }}-rootless\"|" \
+          "s|tag: .*|tag: \"${{ github.event.inputs.tag }}\"|" \
           infra/kubernetes/app/gitea/values.yaml
 
       - name: Commit and push changes
@@ -69,5 +69,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add infra/kubernetes/app/gitea/values.yaml
-          git diff --staged --quiet || git commit -m "chore: update Gitea image to ${{ github.event.inputs.tag }}-rootless"
-          git push origin HEAD:main 
+          git diff --staged --quiet || git commit -m "chore: update Gitea image to ${{ github.event.inputs.tag }}"
+          git push origin HEAD:main
