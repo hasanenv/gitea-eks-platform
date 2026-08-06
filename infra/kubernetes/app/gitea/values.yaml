@@ -19,6 +19,12 @@ gitea:
         secretKeyRef:
           name: gitea-db-secret
           key: password
+  
+image:
+  registry: 727646481331.dkr.ecr.eu-west-2.amazonaws.com
+  repository: gitea-eks-platform-gitea
+  tag: "1.27.1"
+
 ingress:
   enabled: true
   ingressClassName: traefik
