@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
       - name: Pull Gitea public image
         run: docker pull gitea/gitea:${{ github.event.inputs.tag }}
@@ -37,7 +37,7 @@ jobs:
           trivyignores: .trivyignore
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/docker-pipeline-role
           aws-region: ${{ env.AWS_REGION }}
