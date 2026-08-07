@@ -24,6 +24,7 @@ image:
   registry: 727646481331.dkr.ecr.eu-west-2.amazonaws.com
   repository: gitea-eks-platform-gitea
   tag: "1.27.1-rootless"
+  rootless: false
 
 ingress:
   enabled: true
