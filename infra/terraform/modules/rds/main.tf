@@ -49,7 +49,7 @@ resource "aws_db_instance" "eks_gitea_db" {
   manage_master_user_password = true
   skip_final_snapshot         = false
   final_snapshot_identifier   = "${var.project_name}-final-snapshot"
-  deletion_protection         = true
+  deletion_protection         = false
   auto_minor_version_upgrade  = true
 
   tags = local.common_tags
