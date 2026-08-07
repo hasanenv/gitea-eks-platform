@@ -40,7 +40,9 @@ resource "aws_iam_policy" "terraform_plan_state_access" {
         Effect = "Allow"
         Action = [
           "s3:GetObject",
-          "s3:ListBucket"
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:DeleteObject"
         ]
         Resource = [
           "arn:aws:s3:::${var.state_bucket_name}",
