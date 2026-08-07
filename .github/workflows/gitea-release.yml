@@ -61,7 +61,7 @@ jobs:
       - name: Update image tag in values.yaml
         run: |
           sed -i \
-          "s|tag: .*|tag: \"${{ github.event.inputs.tag }}\"|" \
+          "s|fullOverride: .*|fullOverride: \"${ECR_REGISTRY}/${ECR_REPO_NAME}:${{ github.event.inputs.tag }}\"|" \
           infra/kubernetes/app/gitea/values.yaml
 
       - name: Commit and push changes
