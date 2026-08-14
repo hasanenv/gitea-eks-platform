@@ -191,6 +191,20 @@ resource "aws_iam_policy" "terraform_apply_permissions" {
         Resource = ["*"]
       },
       {
+        Sid    = "ManageSecretsManager"
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:ListSecrets",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:TagResource"
+        ]
+        Resource = ["*"]
+      },
+      {
         Sid      = "ManageLogs"
         Effect   = "Allow"
         Action   = ["logs:*"]
