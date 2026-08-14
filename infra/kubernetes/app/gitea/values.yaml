@@ -7,7 +7,7 @@ gitea:
   config:
     database:
       DB_TYPE: postgres
-      HOST: "terraform-cd4b439913c48d0ff35c9fc7f4.cdgy426y6dv1.eu-west-2.rds.amazonaws.com:5432"
+      HOST: "terraform-9066d570ed3d937bacbd7dee36.cdgy426y6dv1.eu-west-2.rds.amazonaws.com:5432"
       NAME: eks_gitea_db
       USER: gitea_user
       SSL_MODE: require
@@ -49,3 +49,7 @@ postgresql:
 
 postgresql-ha:
   enabled: false
+
+deployment:
+  strategy:
+    type: Recreate
