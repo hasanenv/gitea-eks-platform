@@ -1,3 +1,7 @@
 # No fix available in current Gitea release - monitor for updates
 CVE-2026-56852
 GHSA-hrxh-6v49-42gf
+
+# CVE-2026-71556 - go-git vulnerability, fix available in go-git v5.19.2
+# Awaiting Gitea to update their go-git dependency
+CVE-2026-71556
