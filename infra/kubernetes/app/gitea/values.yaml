@@ -21,7 +21,7 @@ gitea:
           key: password
   
 image:
-  fullOverride: "727646481331.dkr.ecr.eu-west-2.amazonaws.com/gitea-eks-platform-gitea:1.27.0-rootless"
+  fullOverride: "727646481331.dkr.ecr.eu-west-2.amazonaws.com/gitea-eks-platform-gitea:1.27.1-rootless"
 
 ingress:
   enabled: true
