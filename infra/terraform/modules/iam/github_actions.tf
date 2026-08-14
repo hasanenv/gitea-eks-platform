@@ -172,6 +172,25 @@ resource "aws_iam_policy" "terraform_apply_permissions" {
         Resource = ["*"]
       },
       {
+        Sid    = "ManageKMS"
+        Effect = "Allow"
+        Action = [
+          "kms:CreateKey",
+          "kms:DescribeKey",
+          "kms:EnableKeyRotation",
+          "kms:GetKeyPolicy",
+          "kms:GetKeyRotationStatus",
+          "kms:ListKeys",
+          "kms:ListResourceTags",
+          "kms:PutKeyPolicy",
+          "kms:TagResource",
+          "kms:UntagResource",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ]
+        Resource = ["*"]
+      },
+      {
         Sid      = "ManageLogs"
         Effect   = "Allow"
         Action   = ["logs:*"]

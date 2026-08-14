@@ -29,6 +29,39 @@ resource "aws_kms_key" "eks_secrets" {
   tags                    = local.common_tags
 }
 
+resource "aws_kms_key_policy" "eks_secrets" {
+  key_id = aws_kms_key.eks_secrets.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "Enable IAM User Permissions"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "Allow EKS to use the key"
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 resource "aws_eks_cluster" "eks_cluster" {
   #checkov:skip=CKV_AWS_39: Public endpoint intentionally enabled with CIDR restriction to known IPs
   name     = var.cluster_name
