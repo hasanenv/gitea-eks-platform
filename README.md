@@ -13,7 +13,9 @@
 ![Checkov](https://img.shields.io/badge/Checkov-IaC%20Security-green)
 ![OIDC](https://img.shields.io/badge/Security-OIDC%20%2F%20IRSA-green)
 
-[comment]: <> (add diagram here)
+<p align="center">
+  <img src="assets/eks-gitea.drawio.png" width="1200">
+</p>
 
 ---
 
@@ -28,7 +30,9 @@ Infrastructure is provisioned via Terraform and deployments are managed through 
 
 ## Platform Demo
 
-[comment]: <> (add demo GIF here)
+<p align="center">
+  <img src="assets/gitea_demo.gif" width="1100">
+</p>
 
 Gitea running on Amazon EKS, accessible over HTTPS at `gitea.hasanenv.co.uk` with a valid Let's Encrypt TLS certificate.
 
@@ -118,7 +122,9 @@ All cluster configuration is managed through ArgoCD using a GitOps approach. The
 
 ArgoCD continuously watches the repository and reconciles the cluster state to match what is defined in Git. If someone manually changes something in the cluster, ArgoCD will revert it on the next sync.
 
-[comment]: <> (add ArgoCD screenshot here)
+<p align="center">
+  <img src="assets/argocd-ui.png" width="800">
+</p>
 
 **How it works**
 - ArgoCD Application manifests in `infra/kubernetes/platform/argocd/` define what to deploy and where to pull it from
@@ -143,19 +149,27 @@ Triggered on pull requests and pushes to `main` for any changes under `infra/ter
 
 This ensures infrastructure changes are reviewed and scanned before being applied.
 
-[comment]: <> (add Terraform pipeline screenshot here)
+<p align="center">
+  <img src="assets/terraform-plan-pipeline.png" width="300">
+  <img src="assets/terraform-apply-pipeline.png" width="300">
+</p>
+<p align="center">
+  <img src="assets/pipeline-pr.png" width="600">
+</p>
 
 ### Gitea Release Pipeline (`gitea-release.yml`)
 
 Triggered manually via `workflow_dispatch` with a tag input (e.g. `1.27.1-rootless`).
 
 - Pulls the specified Gitea image from Docker Hub
-- Scans with Trivy — pipeline fails on HIGH or CRITICAL vulnerabilities
+- Scans with Trivy. Pipeline fails on HIGH or CRITICAL vulnerabilities
 - Pushes the scanned image to ECR
 - Updates the image tag in `infra/kubernetes/app/gitea/values.yaml` and commits to `main`
 - ArgoCD detects the Git change and redeploys Gitea using the new image from ECR
 
-[comment]: <> (add Gitea release pipeline screenshot here)
+<p align="center">
+  <img src="assets/gitea-release-pipeline.png" width="300">
+</p>
 
 > [!NOTE]
 > Known vulnerabilities with no available fix are listed in `.trivyignore` with justification comments.
@@ -169,21 +183,23 @@ The platform uses the kube-prometheus-stack Helm chart, deploying Prometheus and
 - Custom dashboards are an option to provide a more tailored view
 - Metrics are retained for 7 days
 
-[comment]: <> (add Grafana screenshot here)
+<p align="center">
+  <img src="assets/grafana-dashboard.png" width="800">
+</p>
 
 ## Security
 
 **IAM and IRSA**
 - Two dedicated IAM roles for GitHub Actions: `terraform-plan-role` (read-only, PRs) and `terraform-apply-role` (scoped write access, merge to main)
-- Both use GitHub Actions OIDC for keyless authentication — no AWS credentials stored in GitHub
+- Both use GitHub Actions OIDC for keyless authentication. No AWS credentials stored in GitHub
 - AWS Load Balancer Controller and EBS CSI Driver each assume their own IAM role scoped to a specific Kubernetes service account via IRSA trust policy conditions
 
 > [!NOTE]
 > ExternalDNS and cert-manager do not use IRSA as they communicate with Cloudflare rather than AWS. They read their Cloudflare API token from a Kubernetes Secret.
 
 **Container and IaC Scanning**
-- Trivy scans container images before push to ECR — pipeline fails on HIGH or CRITICAL findings
-- Checkov scans Terraform before every apply — misconfigurations are caught before infrastructure is provisioned
+- Trivy scans container images before push to ECR. Pipeline fails on HIGH or CRITICAL findings
+- Checkov scans Terraform before every apply. Misconfigurations are caught before infrastructure is provisioned
 - Immutable ECR image tags prevent any image from being silently overwritten after scanning
 
 **Secrets Management**
